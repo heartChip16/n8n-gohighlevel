@@ -1,1 +1,264 @@
-[{"updatedAt":"2026-09-26T09:56:16.699Z","createdAt":"2026-09-24T23:28:20.245Z","id":"7LTm9HSSmebY8TAK","name":"P1 - Lead Capture to HighLevel","description":null,"active":true,"isArchived":false,"nodes":[{"parameters":{"formTitle":"Get in touch","formDescription":"Leave your details and we'll follow up within one business day.","formFields":{"values":[{"fieldLabel":"Full Name","requiredField":true},{"fieldLabel":"Email","fieldType":"email","requiredField":true},{"fieldLabel":"Phone"},{"fieldLabel":"Interest","fieldType":"dropdown","fieldOptions":{"values":[{"option":"Automation"},{"option":"Web App"},{"option":"Consulting"}]},"requiredField":true}]},"responseMode":"lastNode","options":{"path":"get-in-touch"}},"type":"n8n-nodes-base.formTrigger","typeVersion":2.6,"position":[-528,-16],"id":"dda8fd2c-becb-4757-9a8f-d8d4272518c0","name":"On form submission","webhookId":"a37b6232-abc4-450b-959b-5aa31447a6a0"},{"parameters":{"assignments":{"assignments":[{"id":"80637837-a1f9-4f78-9c4e-ccc073992bbe","name":"email","value":"={{ $json.Email.trim().toLowerCase() }}","type":"string"},{"id":"775faa76-3614-4449-933f-527b10447cba","name":"fullName","value":"={{ $json['Full Name'].trim() }}","type":"string"},{"id":"61490103-b73d-4b7d-af2d-f246d1f4f2f6","name":"firstName","value":"={{ $json['Full Name'].trim().split(' ')[0] }}","type":"string"},{"id":"bf471884-b969-4bdd-a361-fd93c61c9f83","name":"phone","value":"={{($json.Phone || '').trim() }}","type":"string"},{"id":"107092f8-b580-4377-9bc3-01db6da403c2","name":"interest","value":"={{ $json.Interest }}","type":"string"}]},"options":{}},"type":"n8n-nodes-base.set","typeVersion":3.5,"position":[-304,-16],"id":"0ca26147-00c2-4722-acc4-a031aac9534e","name":"Normalize lead"},{"parameters":{"email":"={{ $json.email }}","additionalFields":{"firstName":"={{$json.firstName}}","tags":"={{ 'web-lead,interest-' + $json.interest.toLowerCase().split(' ').join('-') }}"},"requestOptions":{}},"type":"n8n-nodes-base.highLevel","typeVersion":2,"position":[-80,-16],"id":"769e1b63-a213-4bd2-a86c-06b876efd1df","name":"Upsert contact","credentials":{"highLevelOAuth2Api":{"id":"8HlHHW3oWmdVr2Yv","name":"HighLevel account"}}},{"parameters":{"resource":"task","contactId":"={{ $json.id }}","title":"=Follow up: {{ $('Normalize lead').item.json.fullName }} ({{ $('Normalize lead').item.json.interest }})","dueDate":"={{ $now.plus({ days: 1 }).toISO() }}","additionalFields":{},"requestOptions":{}},"type":"n8n-nodes-base.highLevel","typeVersion":2,"position":[112,-16],"id":"e008c006-0f70-434e-a1ff-a2c690907626","name":"Create follow-up task","credentials":{"highLevelOAuth2Api":{"id":"8HlHHW3oWmdVr2Yv","name":"HighLevel account"}}},{"parameters":{"operation":"completion","completionTitle":"=Thanks, {{ $('Normalize lead').item.json.firstName }}!","completionMessage":"= You're in our CRM. Contact ID: {{ $('Upsert contact').item.json.id }}. We'll follow up within one business day.","options":{}},"type":"n8n-nodes-base.form","typeVersion":2.5,"position":[336,-16],"id":"0ec4520d-3f67-484d-a2f6-81fdcb217199","name":"Form","webhookId":"319db054-a974-432f-b1d2-f5d9731346e2"}],"connections":{"On form submission":{"main":[[{"node":"Normalize lead","type":"main","index":0}]]},"Normalize lead":{"main":[[{"node":"Upsert contact","type":"main","index":0}]]},"Upsert contact":{"main":[[{"node":"Create follow-up task","type":"main","index":0}]]},"Create follow-up task":{"main":[[{"node":"Form","type":"main","index":0}]]}},"settings":{"executionOrder":"v1","binaryMode":"separate"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"nodeGroups":[],"pinData":{},"versionId":"d31ecc27-0b83-4f59-83db-c89b1afa200d","activeVersionId":"d31ecc27-0b83-4f59-83db-c89b1afa200d","versionCounter":105,"triggerCount":1,"sourceWorkflowId":null,"tags":[],"shared":[{"updatedAt":"2026-09-24T23:28:20.249Z","createdAt":"2026-09-24T23:28:20.249Z","role":"workflow:owner","workflowId":"7LTm9HSSmebY8TAK","projectId":"K1MQ0m7GwDZsFCQe","project":{"updatedAt":"2026-08-03T02:39:30.855Z","createdAt":"2026-08-03T02:07:25.051Z","id":"K1MQ0m7GwDZsFCQe","name":"Ingrid Torres <ingrid.escabal@gmail.com>","type":"personal","icon":null,"description":null,"customTelemetryTags":[],"creatorId":"c304a99a-ae6a-4f13-9bb1-aa6828c404bb"}}],"versionMetadata":{"name":"Version d31ecc27","description":"With GoHighLevel nodes"}}]
+[
+  {
+    "updatedAt": "2026-09-26T09:56:16.699Z",
+    "createdAt": "2026-09-24T23:28:20.245Z",
+    "id": "7LTm9HSSmebY8TAK",
+    "name": "P1 - Lead Capture to HighLevel",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "formTitle": "Get in touch",
+          "formDescription": "Leave your details and we'll follow up within one business day.",
+          "formFields": {
+            "values": [
+              {
+                "fieldLabel": "Full Name",
+                "requiredField": true
+              },
+              {
+                "fieldLabel": "Email",
+                "fieldType": "email",
+                "requiredField": true
+              },
+              {
+                "fieldLabel": "Phone"
+              },
+              {
+                "fieldLabel": "Interest",
+                "fieldType": "dropdown",
+                "fieldOptions": {
+                  "values": [
+                    {
+                      "option": "Automation"
+                    },
+                    {
+                      "option": "Web App"
+                    },
+                    {
+                      "option": "Consulting"
+                    }
+                  ]
+                },
+                "requiredField": true
+              }
+            ]
+          },
+          "responseMode": "lastNode",
+          "options": {
+            "path": "get-in-touch"
+          }
+        },
+        "type": "n8n-nodes-base.formTrigger",
+        "typeVersion": 2.6,
+        "position": [
+          -528,
+          -16
+        ],
+        "id": "dda8fd2c-becb-4757-9a8f-d8d4272518c0",
+        "name": "On form submission",
+        "webhookId": "a37b6232-abc4-450b-959b-5aa31447a6a0"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "80637837-a1f9-4f78-9c4e-ccc073992bbe",
+                "name": "email",
+                "value": "={{ $json.Email.trim().toLowerCase() }}",
+                "type": "string"
+              },
+              {
+                "id": "775faa76-3614-4449-933f-527b10447cba",
+                "name": "fullName",
+                "value": "={{ $json['Full Name'].trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "61490103-b73d-4b7d-af2d-f246d1f4f2f6",
+                "name": "firstName",
+                "value": "={{ $json['Full Name'].trim().split(' ')[0] }}",
+                "type": "string"
+              },
+              {
+                "id": "bf471884-b969-4bdd-a361-fd93c61c9f83",
+                "name": "phone",
+                "value": "={{($json.Phone || '').trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "107092f8-b580-4377-9bc3-01db6da403c2",
+                "name": "interest",
+                "value": "={{ $json.Interest }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          -304,
+          -16
+        ],
+        "id": "0ca26147-00c2-4722-acc4-a031aac9534e",
+        "name": "Normalize lead"
+      },
+      {
+        "parameters": {
+          "email": "={{ $json.email }}",
+          "additionalFields": {
+            "firstName": "={{$json.firstName}}",
+            "tags": "={{ 'web-lead,interest-' + $json.interest.toLowerCase().split(' ').join('-') }}"
+          },
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.highLevel",
+        "typeVersion": 2,
+        "position": [
+          -80,
+          -16
+        ],
+        "id": "769e1b63-a213-4bd2-a86c-06b876efd1df",
+        "name": "Upsert contact",
+        "credentials": {
+          "highLevelOAuth2Api": {
+            "id": "8HlHHW3oWmdVr2Yv",
+            "name": "HighLevel account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "task",
+          "contactId": "={{ $json.id }}",
+          "title": "=Follow up: {{ $('Normalize lead').item.json.fullName }} ({{ $('Normalize lead').item.json.interest }})",
+          "dueDate": "={{ $now.plus({ days: 1 }).toISO() }}",
+          "additionalFields": {},
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.highLevel",
+        "typeVersion": 2,
+        "position": [
+          112,
+          -16
+        ],
+        "id": "e008c006-0f70-434e-a1ff-a2c690907626",
+        "name": "Create follow-up task",
+        "credentials": {
+          "highLevelOAuth2Api": {
+            "id": "8HlHHW3oWmdVr2Yv",
+            "name": "HighLevel account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "completion",
+          "completionTitle": "=Thanks, {{ $('Normalize lead').item.json.firstName }}!",
+          "completionMessage": "= You're in our CRM. Contact ID: {{ $('Upsert contact').item.json.id }}. We'll follow up within one business day.",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.form",
+        "typeVersion": 2.5,
+        "position": [
+          336,
+          -16
+        ],
+        "id": "0ec4520d-3f67-484d-a2f6-81fdcb217199",
+        "name": "Form",
+        "webhookId": "319db054-a974-432f-b1d2-f5d9731346e2"
+      }
+    ],
+    "connections": {
+      "On form submission": {
+        "main": [
+          [
+            {
+              "node": "Normalize lead",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize lead": {
+        "main": [
+          [
+            {
+              "node": "Upsert contact",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upsert contact": {
+        "main": [
+          [
+            {
+              "node": "Create follow-up task",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create follow-up task": {
+        "main": [
+          [
+            {
+              "node": "Form",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "binaryMode": "separate"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionId": "d31ecc27-0b83-4f59-83db-c89b1afa200d",
+    "activeVersionId": "d31ecc27-0b83-4f59-83db-c89b1afa200d",
+    "versionCounter": 105,
+    "triggerCount": 1,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "shared": [
+      {
+        "updatedAt": "2026-09-24T23:28:20.249Z",
+        "createdAt": "2026-09-24T23:28:20.249Z",
+        "role": "workflow:owner",
+        "workflowId": "7LTm9HSSmebY8TAK",
+        "projectId": "K1MQ0m7GwDZsFCQe",
+        "project": {
+          "updatedAt": "2026-08-03T02:39:30.855Z",
+          "createdAt": "2026-08-03T02:07:25.051Z",
+          "id": "K1MQ0m7GwDZsFCQe",
+          "name": "Ingrid Torres <ingrid.escabal@gmail.com>",
+          "type": "personal",
+          "icon": null,
+          "description": null,
+          "customTelemetryTags": [],
+          "creatorId": "c304a99a-ae6a-4f13-9bb1-aa6828c404bb"
+        }
+      }
+    ],
+    "versionMetadata": {
+      "name": "Version d31ecc27",
+      "description": "With GoHighLevel nodes"
+    }
+  }
+]
